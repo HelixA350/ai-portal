@@ -64,5 +64,19 @@ def meeting_analyzer():
         agents=navigation_agents
     )
 
+@app.get('/document_qa')
+def document_qa():
+    agent = next((a for a in agents_raw if a["id"] == "document_qa"), None)
+    if not agent:
+        return "Агент не найден", 404
+
+    enriched_agent = enrich_agents_with_urls([agent.copy()], app.app_context())[0]
+    navigation_agents = get_navigation_agents()
+    
+    return render_template('agent-details.html',
+        agent=enriched_agent,
+        agents=navigation_agents
+    )
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
