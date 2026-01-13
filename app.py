@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for
-from agent_data import get_agents_data, enrich_agents_with_urls
+from agent_data import get_agents_data, enrich_agents_with_urls, get_navigation_agents
 
 app = Flask(__name__)
 
@@ -11,7 +11,6 @@ def index():
     # Обогащаем данные ссылками внутри контекста запроса
     agents = enrich_agents_with_urls([a.copy() for a in agents_raw], app.app_context())
     
-    # Для главной страницы нужны только поля из hero и краткая инфа об агентах
     return render_template('index.html',
         title="ИИ-агенты | Корпоративный портал",
         hero_title="ИИ‑Агенты для вашего бизнеса",
@@ -30,10 +29,11 @@ def basic_tender():
 
     # Копируем и обогащаем
     enriched_agent = enrich_agents_with_urls([agent.copy()], app.app_context())[0]
+    navigation_agents = get_navigation_agents()
     
     return render_template('agent-details.html',
         agent=enriched_agent,
-        agents=[{"name": "Анализатор тендеров", "detail_url": "/agent/tender-analyzer"}]
+        agents=navigation_agents
     )
 
 @app.get('/data_extraction')
@@ -43,11 +43,26 @@ def data_extraction():
         return "Агент не найден", 404
 
     enriched_agent = enrich_agents_with_urls([agent.copy()], app.app_context())[0]
+    navigation_agents = get_navigation_agents()
     
     return render_template('agent-details.html',
         agent=enriched_agent,
-        agents=[{"name": "Анализатор тендеров", "detail_url": "/agent/tender-analyzer"}]
+        agents=navigation_agents
+    )
+
+@app.get('/meeting_analyzer')
+def meeting_analyzer():
+    agent = next((a for a in agents_raw if a["id"] == "meeting_analyzer"), None)
+    if not agent:
+        return "Агент не найден", 404
+
+    enriched_agent = enrich_agents_with_urls([agent.copy()], app.app_context())[0]
+    navigation_agents = get_navigation_agents()
+    
+    return render_template('agent-details.html',
+        agent=enriched_agent,
+        agents=navigation_agents
     )
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,4 +1,5 @@
 from flask import url_for
+import os
 
 def get_agents_data():
     """Возвращает список всех агентов с их метаданными."""
@@ -9,7 +10,7 @@ def get_agents_data():
             "tags": ["тендеры", "анализ"],
             "image_url": None,  # будет заполнено позже через url_for
             "description": "Оценивает целесообразность участия в тендере и делает первичный анализ.",
-            "action_url": "/agents/tender-analyzer/run",
+            "action_url": os.getenv('BASIC_TENDER_URL'),
             "detail_url": "/basic_tender",
             "features": [
                 "Оценка по целесообразности участия",
@@ -35,7 +36,7 @@ def get_agents_data():
             "tags": ["тендеры", "ТЗ", "Анализ"],
             "image_url": None,
             "description": "Извлекает ключевую информацию из технического задания",
-            "action_url": "/agents/tender-analyzer/run",
+            "action_url": os.getenv('DATA_EXTRACTION_URL'),
             "detail_url": "/data_extraction",
             "features": [
                 "Классификация тендеров",
@@ -54,6 +55,33 @@ def get_agents_data():
                 "ключевые этапы работы, требования по наличию лицензий и разрешений у подрядчика</p>"
             ),
             "image_filename": "images/image1.png"
+        },
+        {
+            "id": "meeting_analyzer",
+            "name": "Анализ встреч",
+            "tags": ["встречи", "транскрибация", "суммаризация", "задачи"],
+            "image_url": None,
+            "description": "Преобразует аудио встреч в текст, выделяет ключевые моменты и формирует задачи.",
+            "action_url": os.getenv('MEETING_ANALYZER_URL'),
+            "detail_url": "/meeting_analyzer",
+            "features": [
+                "Автоматическая транскрибация речи (включая русский язык)",
+                "Интеллектуальная суммаризация по темам и решениям",
+                "Формирование списка задач с ответственными и дедлайнами"
+            ],
+            "use_cases": [
+                "Обработка записей совещаний без ручного конспектирования",
+                "Контроль выполнения решений после встреч",
+                "Быстрая передача контекста коллегам, не участвовавшим во встрече",
+                "Архивирование обсуждений с возможностью поиска по содержанию"
+            ],
+            "long_description": (
+                "<p>Агент принимает аудиозапись встречи и автоматически создаёт структурированный отчёт. "
+                "Сначала выполняется транскрибация с поддержкой русской речи, затем — семантический анализ: "
+                "выделяются обсуждённые темы, принятые решения и явно или косвенно сформулированные задачи. "
+                "Результат включает краткое резюме, полную расшифровку и интерактивный список задач, готовый к интеграции в трекеры.</p>"
+            ),
+            "image_filename": "images/image2.png"
         }
     ]
 
@@ -64,3 +92,10 @@ def enrich_agents_with_urls(agents, app_context):
             agent["image_url"] = url_for('static', filename=agent["image_filename"])
             # Можно добавить другие url_for-ссылки при необходимости
     return agents
+
+def get_navigation_agents():
+    """Возвращает минимальные данные для навигации: имя и detail_url."""
+    return [
+        {"name": agent["name"], "detail_url": agent["detail_url"]}
+        for agent in get_agents_data()
+    ]

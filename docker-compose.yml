@@ -1,0 +1,9 @@
+services:
+  landing:
+    build: .
+    ports:
+      - "8009:5000"
+    environment:
+      - BASIC_TENDER_URL=''
+      - DATA_EXTRACTION_URL=''
+      - MEETING_ANALYZER_URL=''
