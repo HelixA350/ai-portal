@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #8BE2CC;
+      --primary-hover: #70b9a7;
+      --secondary: #6c757d;
+      --light: #ffffff;
+      --light-hover: #f5f5f5;
+      --dark: #212529;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #ffffff;
+      color: var(--dark);
+    }
+
+    .hero {
+      padding: 4rem 0;
+      background-color: var(--light);
+    }
+
+    .hero-content h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 4rem;
+    }
+
+    .hero-content p {
+      font-size: 1.125rem;
+      color: #495057;
+      margin-bottom: 2rem;
+      margin-right: 2rem;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        }
+
+    .agent-card {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        height: auto;
+        max-width: 380px;
+        margin: 0 auto;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+    .agent-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .agent-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        }
+
+    .card-body {
+    padding: 1.25rem;
+    }
+
+
+    .agent-tags {
+      margin-bottom: 0.75rem;
+    }
+
+    .agent-tag {
+      display: inline-block;
+      background-color: #e9ecef;
+      color: #495057;
+      font-size: 0.8125rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      margin-right: 0.375rem;
+    }
+
+    .agent-description {
+      font-size: 0.9375rem;
+      color: #6c757d;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+        background-color:  var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+    .btn-outline-secondary {
+        color: var(--secondary);
+        border-color: var(--secondary);
+    }
+
+
+    .btn-outline-secondary:hover {
+        background-color: var(--light-hover);
+        color: var(--secondary);
+        border-color: var(--secondary);
+
+    }
+    .navbar {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .catalog-underline {
+        width: 470px;
+        height: 1px;
+        background-color: #e9ecef;
+        margin-top: 0rem;
+        margin-bottom: 1rem;
+        }
+    .agent-name {
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white  py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="/">ITR AI HUB</a>
+        <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/">Главная</a>
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="agentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Агенты
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="agentsDropdown">
+            {% for agent in agents %}
+            <li><a class="dropdown-item" href="{{ agent.detail_url }}">{{ agent.name }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+        </div>
+    </div>
+    </nav>
+
+<!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-content">
+          <h1>{{ hero_title }}</h1>
+          <p>{{ hero_subtitle }}</p>
+          {% if hero_cta_url and hero_cta_text %}
+            <a href="#catalog" class="btn btn-primary btn-lg">{{ hero_cta_text }}</a>
+          {% endif %}
+        </div>
+        <div class="col-lg-6 hero-image text-center mt-4 mt-lg-0">
+          <img src="{{ hero_image_url }}" alt="ИИ-агенты" class="img-fluid" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agents Catalog -->
+<section class="agents-section py-5">
+  <div class="container">
+    <div class="d-flex flex-column align-items-center mb-4 ms-3">
+      <h2 class="section-title text-start">Каталог ИИ-агентов</h2>
+      <div class="catalog-underline"></div>
+    </div>
+    <div class="row g-4 justify-content-start">
+      {% for agent in agents %}
+      <div class="col-12 col-md-6 col-lg-4 ms-0">
+        <div class="agent-card">
+          <img src="{{ agent.image_url }}" alt="{{ agent.name }}" />
+          <div class="card-body">
+            <h5 class="card-title agent-name">{{ agent.name }}</h5>
+            <div class="agent-tags">
+              {% for tag in agent.tags[:2] %}
+                <span class="agent-tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <p class="agent-description">{{ agent.description }}</p>
+            <div class="d-flex gap-2 w-100">
+                <a href="{{ agent.detail_url }}" class="btn btn-outline-secondary w-50">Подробнее</a>
+                <a href="{{ agent.action_url }}" class="btn btn-primary w-50">Перейти</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
