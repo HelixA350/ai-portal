@@ -7,3 +7,4 @@ services:
       - BASIC_TENDER_URL=''
       - DATA_EXTRACTION_URL=''
       - MEETING_ANALYZER_URL=''
+      - DOCUMENT_QA_URL=https://chat.qwen.ai/
